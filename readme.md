@@ -1,11 +1,11 @@
 <div align="center">
 
-`
+```
                           __     
  ___ _    _____ ___  ____/ /_____
 / _ \ |/|/ / -_) _ \/ __/ __/ __/
 \___/__,__/\__/_//_/_/  \__/\__/ 
-`
+```
 
 minimal web panel for [olcrtc](https://github.com/openlibrecommunity/olcrtc)
 <br>
