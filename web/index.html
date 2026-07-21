@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>owenrtc</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div id="app">
+
+        <div id="setup" class="screen hidden">
+            <pre class="logo">                          __     
+ ___ _    _____ ___  ____/ /_____
+/ _ \ |/|/ / -_) _ \/ __/ __/ __/
+\___/__,__/\__/_//_/_/  \__/\__/ </pre>
+            <h1>owenrtc</h1>
+            <div class="s">connect to your server</div>
+            <div class="info">
+                <div class="row">
+                    <span class="label">host</span>
+                    <input type="text" id="ssh-host" placeholder="203.0.113.1" />
+                </div>
+                <div class="row">
+                    <span class="label">port</span>
+                    <input type="text" id="ssh-port" placeholder="22" value="22" />
+                </div>
+                <div class="row">
+                    <span class="label">user</span>
+                    <input type="text" id="ssh-user" placeholder="root" />
+                </div>
+                <div class="row">
+                    <span class="label">password</span>
+                    <input type="password" id="ssh-pass" placeholder="****" />
+                </div>
+                <div class="row btn-row">
+                    <button id="install-btn" onclick="doInstall()">install</button>
+                </div>
+                <div id="install-status" class="s"></div>
+            </div>
+        </div>
+
+        <div id="main" class="screen hidden">
+            <div class="header">
+                <pre class="logo-sm">owenrtc</pre>
+                <span class="s" id="mode-badge"></span>
+            </div>
+            <div class="server-list" id="server-list">
+            </div>
+            <button class="add-btn" onclick="showCreate()">+</button>
+        </div>
+
+        <div id="create" class="screen hidden">
+            <h1>new instance</h1>
+            <div class="info">
+                <div class="row">
+                    <span class="label">name</span>
+                    <input type="text" id="inst-name" placeholder="RU-1" />
+                </div>
+                <div class="row">
+                    <span class="label">provider</span>
+                    <select id="inst-provider" onchange="updateTransports()">
+                        <option value="jitsi">jitsi</option>
+                        <option value="telemost">telemost</option>
+                        <option value="wbstream">wbstream</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <span class="label">transport</span>
+                    <select id="inst-transport"></select>
+                </div>
+                <div class="row">
+                    <span class="label">jitsi host</span>
+                    <input type="text" id="jitsi-host" list="jitsi-hosts" placeholder="select or type host" oninput="fillRoomURL()" />
+                    <datalist id="jitsi-hosts"></datalist>
+                </div>
+                <div class="row">
+                    <span class="label">room url</span>
+                    <input type="text" id="inst-room" placeholder="https://meet.example.org/myroom" />
+                </div>
+                <div class="row btn-row">
+                    <button onclick="testRoom()">test room</button>
+                    <span id="test-result" class="s"></span>
+                </div>
+                <div class="row">
+                    <span class="label">traffic limit</span>
+                    <input type="text" id="inst-traffic" placeholder="10gb (0 = unlimited)" />
+                </div>
+                <div class="row">
+                    <span class="label">speed limit</span>
+                    <input type="text" id="inst-speed" placeholder="10mb/s (0 = unlimited)" />
+                </div>
+                <div class="row">
+                    <span class="label">outbound socks</span>
+                    <input type="text" id="inst-socks" placeholder="host:port (optional)" />
+                </div>
+                <div class="row btn-row">
+                    <button onclick="createInstance()">create</button>
+                    <button class="btn-link" onclick="showMain()">cancel</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

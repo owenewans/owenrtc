@@ -32,6 +32,7 @@ vendor/
 
 # Nix
 .direnv
+.envrc
 
 # Logs
 logs

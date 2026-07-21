@@ -1,0 +1,9 @@
+{
+  "name": "owenrtc",
+  "outputfilename": "owenrtc",
+  "frontend:dir": "web",
+  "frontend:install": "",
+  "frontend:build": "",
+  "wailsjsdir": "./web",
+  "version": "2"
+}

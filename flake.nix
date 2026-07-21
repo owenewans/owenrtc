@@ -19,6 +19,11 @@
               go
               golangci-lint
               mage
+              acme-sh
+              wails
+              pkg-config
+              webkitgtk_4_1
+              gtk3
             ];
 
             shellHook = ''
