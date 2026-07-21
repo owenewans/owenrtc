@@ -1,17 +1,18 @@
 <div align="center">
 
-
+`
                           __     
  ___ _    _____ ___  ____/ /_____
 / _ \ |/|/ / -_) _ \/ __/ __/ __/
 \___/__,__/\__/_//_/_/  \__/\__/ 
-
+`
 
 minimal web panel for [olcrtc](https://github.com/openlibrecommunity/olcrtc)
 <br>
+
 </div>
 
-stack       go 1.26+ / html / css / vanilla js / olcrtc / mage / gossh
+stack       go 1.26+ / html / css / vanilla js / olcrtc / mage / gossh / wails
 license     wtfpl
 
 features:
@@ -26,7 +27,8 @@ quick start:
 ```sh
 git clone https://src.owenewans.org/owenrtc --recurse-submodules
 cd owenrtc
-mage run
+# install golang, mage, wails 
+mage wails # or run
 ```
 
 nix users:
@@ -34,18 +36,13 @@ nix users:
 git clone https://src.owenewans.org/owenrtc --recurse-submodules
 cd owenrtc
 nix develop
-mage run
+mage wails # or run
 ```
-
-wails (optional, desktop app):
-wails v2 needs webkit2gtk-4.0, not in nixpkgs unstable.
-install manually: go install github.com/wailsapp/wails/v2/cmd/wails@latest
-then: wails dev -tags wails
 
 commands:
 mage build  build panel binary
 mage run    build + run panel on 127.0.0.1:8090
-mage wails  build + run as wails desktop (needs manual wails install)
+mage wails  build + run panel on wails
 mage lint   golangci-lint
 mage test   run tests
 
