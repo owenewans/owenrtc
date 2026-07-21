@@ -1,0 +1,51 @@
+# Local
+.local
+.env
+.env.*
+!.env.example
+
+# Build output
+build/
+dist/
+bin/
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+go.work
+go.work.sum
+vendor/
+
+# Editor / OS
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Nix
+.direnv
+
+# Logs
+logs
+*.log
+
+# Secrets / runtime
+olcrtc.key
+*.key
+
+# AI / agent scratch
+.opencode
+CLAUDE.md
+GEMINI.md
+.kiro
+.kirograph
+
+# Olcrtc submodule keeps its own ignore rules
