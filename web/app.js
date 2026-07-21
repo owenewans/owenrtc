@@ -1,4 +1,25 @@
-// wails injects bound methods at window.go.panel.API; fall back to HTTP fetch in browser
+/* wails events: wailsjs runtime */
+let wailsRuntime = null
+try {
+    import('../wailsjs/runtime/runtime.js').then(m => { wailsRuntime = m })
+} catch {}
+
+function onEvent(event, cb) {
+    if (wailsRuntime && wailsRuntime.EventsOn) {
+        wailsRuntime.EventsOn(event, cb)
+    }
+}
+
+// listen for install and test logs
+onEvent("install:log", (line) => appendLog("install-log", line))
+onEvent("install:done", () => {
+    setTimeout(showMain, 500)
+})
+onEvent("test:log", (line) => {
+    document.getElementById("test-log").classList.remove("hidden")
+    appendLog("test-log", line)
+})
+
 function wapi() {
     return (window.go && window.go.panel && window.go.panel.API) || null
 }
@@ -45,6 +66,13 @@ async function listServers() {
     if (a) return a.ListInstances()
     const r = await fetch("/api/servers")
     return r.json()
+}
+
+async function deleteServerAPI(id) {
+    const a = wapi()
+    if (a) return a.DeleteInstance(id)
+    await fetch("/api/servers/" + id, {method: "DELETE"})
+    return "ok"
 }
 
 async function installAPI(host, port, user, password) {
@@ -94,7 +122,26 @@ function showMain() {
 function showCreate() {
     loadJitsiHosts()
     updateTransports()
+    clearForm()
     show("create")
+}
+
+function clearForm() {
+    document.getElementById("inst-name").value = ""
+    document.getElementById("inst-room").value = ""
+    document.getElementById("inst-traffic").value = ""
+    document.getElementById("inst-speed").value = ""
+    document.getElementById("inst-socks").value = ""
+    document.getElementById("test-result").textContent = ""
+    document.getElementById("test-log").textContent = ""
+    document.getElementById("test-log").classList.add("hidden")
+}
+
+function appendLog(id, line) {
+    const el = document.getElementById(id)
+    if (!el) return
+    el.textContent += line + "\n"
+    el.scrollTop = el.scrollHeight
 }
 
 async function loadServers() {
@@ -108,12 +155,17 @@ async function loadServers() {
         card.innerHTML = `
             <div>
                 <div class="name">${srv.name}</div>
-                <div class="meta">${srv.provider} / ${srv.transport}</div>
+                <div class="meta">${srv.provider} / ${srv.transport} / ${srv.status || "stopped"}</div>
             </div>
-            <button class="btn-link" onclick="alert('todo')">manage</button>
+            <button class="btn-link" onclick="deleteServer('${srv.id}')">delete</button>
         `
         list.appendChild(card)
     })
+}
+
+async function deleteServer(id) {
+    try { await deleteServerAPI(id) } catch (e) {}
+    loadServers()
 }
 
 async function loadJitsiHosts() {
@@ -155,12 +207,12 @@ async function doInstall() {
     const pass = document.getElementById("ssh-pass").value
 
     if (!host || !user || !pass) {
-        document.getElementById("install-status").textContent = "fill all fields"
+        appendLog("install-log", "fill all fields")
         return
     }
 
-    document.getElementById("install-status").textContent = "installing..."
     document.getElementById("install-btn").disabled = true
+    document.getElementById("install-log").textContent = ""
 
     let result = "failed"
     try {
@@ -169,11 +221,11 @@ async function doInstall() {
         result = String(e)
     }
 
-    if (result === "ok" || result.includes("ok")) {
-        document.getElementById("install-status").textContent = "installation ok"
+    if (result === "ok") {
+        appendLog("install-log", "installation ok")
         setTimeout(showMain, 1000)
     } else {
-        document.getElementById("install-status").textContent = result || "failed"
+        appendLog("install-log", result)
         document.getElementById("install-btn").disabled = false
     }
 }
@@ -183,6 +235,7 @@ async function testRoomAPI() {
     const transport = document.getElementById("inst-transport").value
     const room = document.getElementById("inst-room").value
     const el = document.getElementById("test-result")
+    const logEl = document.getElementById("test-log")
 
     if (!room) {
         el.textContent = "enter room url"
@@ -190,6 +243,9 @@ async function testRoomAPI() {
     }
 
     el.textContent = "testing..."
+    logEl.textContent = ""
+    logEl.classList.remove("hidden")
+
     try {
         const result = await testRoom(provider, transport, room)
         el.textContent = result
@@ -209,6 +265,12 @@ async function createInstance() {
             speed_limit: parseSpeed(document.getElementById("inst-speed").value),
         },
     }
+
+    if (!inst.name || !inst.room_id) {
+        alert("fill name and room url")
+        return
+    }
+
     try { await createInstanceAPI(inst) } catch (e) {}
     showMain()
 }
@@ -240,5 +302,6 @@ window.fillRoomURL = fillRoomURL
 window.doInstall = doInstall
 window.testRoom = testRoomAPI
 window.createInstance = createInstance
+window.deleteServer = deleteServer
 
 init()

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"path/filepath"
+	"strings"
 
 	"src.owenewans.org/owenrtc/internal/instances"
 	"src.owenewans.org/owenrtc/internal/rooms"
@@ -28,14 +29,24 @@ func (s *Server) handleMode(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleServers(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
-		writeJSON(w, []instances.Instance{})
+		list, err := instances.LoadAll()
+		if err != nil {
+			http.Error(w, "failed to load instances", http.StatusInternalServerError)
+			return
+		}
+		writeJSON(w, list)
 	case http.MethodPost:
 		var inst instances.Instance
 		if err := json.NewDecoder(r.Body).Decode(&inst); err != nil {
 			http.Error(w, "bad request", http.StatusBadRequest)
 			return
 		}
+		_ = instances.Add(&inst)
 		writeJSON(w, inst)
+	case http.MethodDelete:
+		id := strings.TrimPrefix(r.URL.Path, "/api/servers/")
+		_ = instances.Remove(id)
+		writeJSON(w, map[string]string{"status": "ok"})
 	default:
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 	}

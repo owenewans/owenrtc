@@ -6,6 +6,10 @@ export function CreateInstance(arg1) {
   return window['go']['panel']['API']['CreateInstance'](arg1);
 }
 
+export function DeleteInstance(arg1) {
+  return window['go']['panel']['API']['DeleteInstance'](arg1);
+}
+
 export function Install(arg1, arg2, arg3, arg4) {
   return window['go']['panel']['API']['Install'](arg1, arg2, arg3, arg4);
 }

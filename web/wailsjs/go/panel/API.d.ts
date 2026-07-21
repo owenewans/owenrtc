@@ -5,6 +5,8 @@ import {mode} from '../models';
 
 export function CreateInstance(arg1:instances.Instance):Promise<instances.Instance>;
 
+export function DeleteInstance(arg1:string):Promise<string>;
+
 export function Install(arg1:string,arg2:number,arg3:string,arg4:string):Promise<string>;
 
 export function JitsiHosts():Promise<Array<string>>;

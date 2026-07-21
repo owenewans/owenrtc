@@ -184,3 +184,26 @@ button:hover {
     border: 1px dashed #d0d0e8;
     margin-top: 8px;
 }
+
+.log {
+    text-align: left;
+    font-size: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    background: #f5f5fd;
+    border: 1px solid #d0d0e8;
+    border-radius: 2px;
+    padding: 8px 12px;
+    margin: 8px 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+    color: #8e8ec8;
+}
+
+.log.hidden {
+    display: none;
+}
+
+.log:empty {
+    display: none;
+}

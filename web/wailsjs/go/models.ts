@@ -38,6 +38,7 @@ export namespace instances {
 	    provider: string;
 	    transport: string;
 	    room_id: string;
+	    key: string;
 	    limits: Limits;
 	    outbound?: OutboundSOCKS;
 	    created_at: number;
@@ -54,6 +55,7 @@ export namespace instances {
 	        this.provider = source["provider"];
 	        this.transport = source["transport"];
 	        this.room_id = source["room_id"];
+	        this.key = source["key"];
 	        this.limits = this.convertValues(source["limits"], Limits);
 	        this.outbound = this.convertValues(source["outbound"], OutboundSOCKS);
 	        this.created_at = source["created_at"];
