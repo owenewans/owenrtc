@@ -40,25 +40,28 @@ jobs:
         with:
           go-version: "1.26"
 
-      - uses: actions/setup-go@v5
-        with:
-          go-version: "1.26"
-        if: matrix.arch == 'arm64'
+      - name: verify submodule
+        shell: bash
+        run: |
+          ls -la olcrtc/cmd/olcrtc/
+          cat olcrtc/go.mod | head -3
 
       - name: build olcrtc
+        shell: bash
         env:
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
           CGO_ENABLED: 0
         run: |
           cd olcrtc
-          go build -trimpath -ldflags="-s -w" -o ../olcrtc-${{ matrix.os }}-${{ matrix.arch }} ./cmd/olcrtc
+          go build -trimpath -ldflags="-s -w" -o "$GITHUB_WORKSPACE/olcrtc-${{ matrix.os }}-${{ matrix.arch }}${{ matrix.os == 'windows' && '.exe' || '' }}" ./cmd/olcrtc
+          ls -la "$GITHUB_WORKSPACE/olcrtc-${{ matrix.os }}-${{ matrix.arch }}${{ matrix.os == 'windows' && '.exe' || '' }}"
 
       - name: upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: olcrtc-${{ matrix.os }}-${{ matrix.arch }}
-          path: olcrtc-${{ matrix.os }}-${{ matrix.arch }}
+          path: olcrtc-${{ matrix.os }}-${{ matrix.arch }}${{ matrix.os == 'windows' && '.exe' || '' }}
           if-no-files-found: error
 
   build-owenrtc:
@@ -77,7 +80,9 @@ jobs:
       - name: build owenrtc
         env:
           CGO_ENABLED: 0
-        run: go build -trimpath -ldflags="-s -w" -o owenrtc-linux-amd64 ./cmd/owenrtc
+        run: |
+          go build -trimpath -ldflags="-s -w" -o owenrtc-linux-amd64 ./cmd/owenrtc
+          ls -la owenrtc-linux-amd64
 
       - name: download all olcrtc artifacts
         uses: actions/download-artifact@v4
@@ -86,6 +91,7 @@ jobs:
           pattern: olcrtc-*
 
       - name: list artifacts
+        shell: bash
         run: find artifacts -type f
 
       - name: create release
